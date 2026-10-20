@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 test.describe('Standalone Reader E2E', () => {
   test('should import package, read pages, and answer quiz', async ({ page }) => {
