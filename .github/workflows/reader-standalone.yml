@@ -1,0 +1,64 @@
+name: Reader Standalone CI
+
+on:
+  push:
+    branches: [ main, 'cursor/**' ]
+    paths:
+      - 'apps/reader-standalone/**'
+      - 'packages/shared/**'
+      - '.github/workflows/reader-standalone.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'apps/reader-standalone/**'
+      - 'packages/shared/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build shared package
+        run: npm run build:shared
+      
+      - name: Typecheck
+        run: npm run typecheck -w @hsb/reader-standalone
+      
+      - name: Run unit tests
+        run: npm run test -w @hsb/reader-standalone
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/reader-standalone
+      
+      - name: Run E2E tests
+        run: npm run test:e2e -w @hsb/reader-standalone
+      
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/reader-standalone/playwright-report/
+          retention-days: 7
+      
+      - name: Build
+        run: npm run build -w @hsb/reader-standalone
+      
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: reader-standalone-dist
+          path: apps/reader-standalone/dist/
+          retention-days: 7
