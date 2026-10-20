@@ -5,7 +5,8 @@
   "description": "기술직 공무원 기출 + 유튜브 해설영상 연동 필기 이북 (PWA 단일코드 + PHP/MySQL 서버, Tauri/Capacitor 래핑)",
   "workspaces": [
     "packages/*",
-    "apps/web"
+    "apps/web",
+    "apps/reader-standalone"
   ],
   "scripts": {
     "build:shared": "npm run build -w @hsb/shared",
