@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import path from 'path';
 
 export default defineConfig({
   plugins: [
@@ -34,8 +35,19 @@ export default defineConfig({
       }
     })
   ],
+  resolve: {
+    alias: {
+      '@hsb/shared': path.resolve(__dirname, '../../packages/shared/dist/index.js')
+    }
+  },
   build: {
     target: 'es2020',
-    outDir: 'dist'
+    outDir: 'dist',
+    commonjsOptions: {
+      include: [/packages\/shared/, /node_modules/]
+    }
+  },
+  optimizeDeps: {
+    include: ['@hsb/shared']
   }
 });
